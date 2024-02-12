@@ -1,0 +1,75 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+#admin-panel-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.section {
+    display: none;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4caf50;
+    color: white;
+}
+
+label {
+    display: inline-block;
+    width: 100px; /* Imposta la larghezza del label, regola secondo le tue esigenze */
+    text-align: right; /* Allinea il testo a destra del label */
+    margin-right: 10px; /* Aggiungi spazio tra il label e la casella di testo */
+}
+
+input {
+    width: 200px; /* Imposta la larghezza della casella di testo, regola secondo le tue esigenze */
+    margin-bottom: 10px; /* Aggiungi spazio tra le caselle di testo */
+}
+
+button {
+    margin-top: 10px; /* Aggiungi spazio sopra il pulsante */
+}
+
+#classTable, #professorTable, #studentTable, #classTableUnassign, #professorTableUnassign, #studentTableUnassign {
+            height: 200px;
+            width: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        #classTable th, #professorTable th, #studentTable th,#classTableUnassign th, #professorTableUnassign th, #studentTableUnassign th {
+            background-color: #f2f2f2;
+        }
