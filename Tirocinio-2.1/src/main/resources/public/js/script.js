@@ -1184,6 +1184,7 @@ function displayProfessorsList(professorsList) {
             '<td>' + professor.nome + '</td>' +
             '<td>' + professor.cognome + '</td>' +
             '<td>' + professor.materia + '</td>' +
+            '<td>' + (professor.classe ? professor.classe.nome : 'N/D') + '</td>' +
             '</tr>';
 
         professorTable.append(row);
@@ -1203,6 +1204,7 @@ function displayStudentsList(studentsList) {
             '<td>' + student.id + '</td>' +
             '<td>' + student.nome + '</td>' +
             '<td>' + student.cognome + '</td>' +
+            '<td>' + (student.classe ? student.classe.nome : 'N/D') + '</td>' +
             '</tr>';
 
         studentTable.append(row);
