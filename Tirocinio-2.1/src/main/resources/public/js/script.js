@@ -34,92 +34,6 @@ function getProfessors() {
 }
 
 
-function createProfessor() {
-    const token = localStorage.getItem('token');
-
-    const professorData = {
-        nome: prompt('Inserisci il nome del professore:'),
-        cognome: prompt('Inserisci il cognome del professore:'),
-        eta: prompt('Inserisci l\'età del professore:'),
-        indirizzo: prompt('Inserisci l\'indirizzo del professore:'),
-        materia: prompt('Inserisci la materia del professore')
-    };
-
-    $.ajax({
-        url: '/api/professori',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(professorData),
-        headers: {
-            'Authorization': 'Bearer ' + token
-        },
-        success: function (data) {
-            console.log('Professore creato con successo:', data);
-            getProfessors();
-        },
-        error: function (error) {
-            handleCommonErrorCases(error);
-        }
-    });
-}
-
-function updateProfessor() {
-    const token = localStorage.getItem('token');
-
-    const professorId = prompt('Inserisci l\'ID del professore da aggiornare:');
-
-    if (professorId) {
-        const updatedProfessorData = {
-            nome: prompt('Inserisci il nuovo nome del professore:'),
-            cognome: prompt('Inserisci il nuovo cognome del professore:'),
-            eta: prompt('Inserisci la nuova età del professore:'),
-            indirizzo: prompt('Inserisci il nuovo indirizzo del professore:'),
-            materia: prompt('Inserisci la nuova materia insegnata dal professore')
-        };
-
-        $.ajax({
-            url: `/api/professori/${professorId}`,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedProfessorData),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                console.log('Professore aggiornato con successo:', data);
-                getProfessors();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-
-function deleteProfessor() {
-    const token = localStorage.getItem('token');
-
-    const professorId = prompt('Inserisci l\'ID del professore da eliminare:');
-
-    if (professorId) {
-        $.ajax({
-            url: `/api/professori/${professorId}`,
-            type: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function () {
-                console.log('Professore eliminato con successo');
-                getProfessors();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
 function displayProfessors(professors) {
     const tableBody = $('#professor-table tbody');
     tableBody.empty();
@@ -183,86 +97,6 @@ function displayClasses(classes) {
     $('#class-table').fadeIn();
 }
 
-
-// Function to create a new class
-function createClass() {
-    const token = localStorage.getItem('token');
-    var className = prompt('Inserisci il nome della classe:');
-    var classYear = prompt('Inserisci l\'anno della classe:');
-    if (className && classYear) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/classi',
-            contentType: 'application/json',
-            data: JSON.stringify({ nome: className, anno: classYear }),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Class created successfully!');
-                getClasses();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-// Function to update an existing class
-function updateClass1() {
-    const token = localStorage.getItem('token');
-    var classId = prompt('Enter the ID of the class to update:');
-    var className = prompt('Enter the new name of the class:');
-    var classYear = prompt('Enter the new year of the class:');
-    if (classId && className && classYear) {
-        $.ajax({
-            type: 'PUT',
-            url: '/api/classi/' + classId,
-            contentType: 'application/json',
-            data: JSON.stringify({
-                nome: className,
-                anno: classYear,
-                professori: [],
-                studenti: []
-            }),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Class updated successfully!');
-                getClasses();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-// Function to delete a class
-function deleteClass() {
-    const token = localStorage.getItem('token');
-    var classId = prompt('Enter the ID of the class to delete:');
-    if (classId) {
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/classi/' + classId,
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Class deleted successfully!');
-                getClasses();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-// Function to get all students
 function getStudents() {
     const token = localStorage.getItem('token');
 
@@ -281,7 +115,6 @@ function getStudents() {
     });
 }
 
-// Function to display students
 function displayStudents(students) {
     const tableBody = $('#student-table tbody');
     tableBody.empty();
@@ -304,147 +137,6 @@ function displayStudents(students) {
     $('#student-table').fadeIn();
 }
 
-// Function to create a new student
-function createStudent() {
-    const token = localStorage.getItem('token');
-    var studentName = prompt('Enter the student name:');
-    var studentSurname = prompt('Enter the student surname:');
-    var studentAge = prompt('Enter the student age:');
-    var studentAddress = prompt('Enter the student address:');
-    if (studentName && studentSurname && studentAge && studentAddress) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/studenti',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                nome: studentName,
-                cognome: studentSurname,
-                eta: studentAge,
-                indirizzo: studentAddress
-            }),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Student created successfully!');
-                getStudents();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-// Function to update an existing student
-function updateStudent() {
-    const token = localStorage.getItem('token');
-    var studentId = prompt('Enter the ID of the student to update:');
-    var studentName = prompt('Enter the new name of the student:');
-    var studentSurname = prompt('Enter the new surname of the student:');
-    var studentAge = prompt('Enter the new age of the student:');
-    var studentAddress = prompt('Enter the new address of the student:');
-    if (studentId && studentName && studentSurname && studentAge && studentAddress) {
-        $.ajax({
-            type: 'PUT',
-            url: '/api/studenti/' + studentId,
-            contentType: 'application/json',
-            data: JSON.stringify({
-                nome: studentName,
-                cognome: studentSurname,
-                eta: studentAge,
-                indirizzo: studentAddress
-            }),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Student updated successfully!');
-                getStudents();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-// Function to delete a student
-function deleteStudent() {
-    const token = localStorage.getItem('token');
-    var studentId = prompt('Enter the ID of the student to delete:');
-
-    if (studentId) {
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/studenti/' + studentId,
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Student deleted successfully!');
-                getStudents();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
-
-
-// Function to update an existing class with professors and students
-function updateClassWithAssignments() {
-    const token = localStorage.getItem('token');
-    var classId = prompt('Enter the ID of the class to update:');
-    var className = prompt('Enter the new name of the class:');
-    var classYear = prompt('Enter the new year of the class:');
-
-    if (classId && className && classYear) {
-        
-        var professorIds = [];
-        do {
-            var professorId = prompt('Enter Professor ID to assign (press Cancel to finish):');
-            if (professorId) {
-                professorIds.push({ id: parseInt(professorId) });
-            }
-        } while (professorId);
-
-        
-        var studentIds = [];
-        do {
-            var studentId = prompt('Enter Student ID to assign (press Cancel to finish):');
-            if (studentId) {
-                studentIds.push({ id: parseInt(studentId) });
-            }
-        } while (studentId);
-
-        
-        const updatedClassData = {
-            nome: className,
-            anno: classYear,
-            professori: professorIds,
-            studenti: studentIds
-        };
-
-        $.ajax({
-            type: 'PUT',
-            url: `/api/classi/${classId}`,
-            contentType: 'application/json',
-            data: JSON.stringify(updatedClassData),
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (data) {
-                alert('Class updated successfully with assignments!');
-                getClasses();
-            },
-            error: function (error) {
-                handleCommonErrorCases(error);
-            }
-        });
-    }
-}
 
 // Funzione generica per l'aggiornamento di una classe
 function updateClass(classeId, payload) {
@@ -866,7 +558,6 @@ function deleteEntity(entityType, entityId) {
                 } else if (entityType === 'student' && data.classe) {
                     alert('Impossibile eliminare lo studente. È già associato a una classe.');
                 } else {
-                    // Animazione di dissolvenza sul record della tabella
                     $(`#${entityType}-table-row-${entityId}`).fadeOut(500, function() {
                         // Quando l'animazione è completata, esegui la cancellazione effettiva
                         performDelete(entityType, entityId);
@@ -914,7 +605,6 @@ function showCreateForm(entityType) {
     const editFormContainer = $(`#${entityType}-edit-form-container`);
     editFormContainer.empty();
 
-    // Nascondi le tabelle all'inizio
 	$(`#${entityType}-table`).fadeOut();
 
     switch (entityType) {
@@ -1102,7 +792,6 @@ function getClassesList(callback) {
             'Authorization': 'Bearer ' + token
         },
         success: function (classList) {
-            // Chiama la funzione di callback con l'elenco delle classi
             callback(classList);
         },
         error: function (error) {
@@ -1121,7 +810,6 @@ function getProfessorsList(callback) {
             'Authorization': 'Bearer ' + token
         },
         success: function (professorsList) {
-            // Chiama la funzione di callback con l'elenco dei professori
             callback(professorsList);
         },
         error: function (error) {
@@ -1140,7 +828,6 @@ function getStudentsList(callback) {
             'Authorization': 'Bearer ' + token
         },
         success: function (studentsList) {
-            // Chiama la funzione di callback con l'elenco dei professori
             callback(studentsList);
         },
         error: function (error) {
@@ -1159,7 +846,7 @@ function displayClassesList(classesList) {
 
     classesList.forEach(function (classe) {
         var row = '<tr>' +
-            '<td><input type="radio" name="classRadio" value="' + classe.id + '"></td>' +
+            '<td><input type="radio" name="classRadio" value="' + classe.nome + '"></td>' +
             '<td>' + classe.id + '</td>' +
             '<td>' + classe.nome + '</td>' +
             '<td>' + classe.anno + '</td>' +
@@ -1168,7 +855,44 @@ function displayClassesList(classesList) {
         classTable.append(row);
         classTable2.append(row);
     });
+    
+    // Aggiungi un evento change per rilevare la selezione di una nuova classe
+    $('#classTableUnassign input[type="radio"]').change(function() {
+        var className = $(this).val();
+        console.log(className);
+        
+        filterTablesByClass(className);
+    });
 }
+
+// Funzione per filtrare automaticamente le tabelle dei professori e degli studenti in base al nome della classe selezionata
+function filterTablesByClass(className) {
+
+    // Mostra solo i professori e gli studenti associati alla classe selezionata
+    $('#professorTableUnassign tr, #studentTableUnassign tr').each(function() {
+        var classValue;
+
+        // Determina la tabella corrente in base al genitore del tr
+        var $parentTable = $(this).closest('table');
+
+        // Verifica se la tabella è quella dei professori o degli studenti e imposta il selettore di colonna appropriato
+        if ($parentTable.attr('id') === 'professorTableUnassign') {
+            classValue = $(this).find('td:eq(5)').text(); // Colonna corretta per la tabella dei professori
+        } else if ($parentTable.attr('id') === 'studentTableUnassign') {
+            classValue = $(this).find('td:eq(4)').text(); // Colonna corretta per la tabella degli studenti
+        }
+        // Controlla se il valore della classe corrisponde al nome della classe selezionata
+        if (classValue === className) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+
+
+
 
 // Funzione per popolare dinamicamente la tabella dei professori
 function displayProfessorsList(professorsList) {
@@ -1191,6 +915,38 @@ function displayProfessorsList(professorsList) {
         professorTable2.append(row);
     });
 }
+
+// Funzione per visualizzare i professori senza classe assegnata
+function showProfessorsWithoutClass() {
+    $('#professorTable tr').each(function() {
+        if ($(this).find('td:eq(5)').text() === 'N/D') {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+// Funzione per visualizzare i professori senza classe assegnata
+function showStudentsWithoutClass() {
+    $('#studentTable tr').each(function() {
+        if ($(this).find('td:eq(4)').text() === 'N/D') {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+// Funzione per ripristinare la visualizzazione di tutti i professori
+function resetProfessorFilter() {
+    $('#professorTable tr').show();
+}
+
+function resetStudentFilter() {
+    $('#studentTable tr').show();
+}
+
 // Funzione per popolare dinamicamente la tabella degli studenti
 function displayStudentsList(studentsList) {
     var studentTable = $('#studentTable');
@@ -1211,6 +967,9 @@ function displayStudentsList(studentsList) {
         studentTable2.append(row);
     });
 }
+
+
+
 
 
 

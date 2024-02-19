@@ -88,11 +88,15 @@
 	    </table>
 	
 	    <label for="professorTable">Seleziona un Professore:</label>
+	    <button onclick="showProfessorsWithoutClass()">Mostra Professori Senza Classe</button>
+		<button onclick="resetProfessorFilter()">Mostra Tutti i Professori</button>
 	    <table id="professorTable">
 	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
 	    </table>
 	
 		<label for="studentTable">Seleziona uno Studente:</label>
+		<button onclick="showStudentsWithoutClass()">Mostra Studenti Senza Classe</button>
+		<button onclick="resetStudentFilter()">Mostra Tutti gli Studenti</button>
 	    <table id="studentTable">
 	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
 	    </table>
@@ -105,16 +109,19 @@
 	
 	    <label for="classTableUnassign">Seleziona una Classe:</label>
 	    <table id="classTableUnassign">
+			<tbody></tbody>
 	        <!-- La tabella delle classi verrà riempita dinamicamente tramite JavaScript -->
 	    </table>
 	
 	    <label for="professorTableUnassign">Seleziona un Professore:</label>
 	    <table id="professorTableUnassign">
+			<tbody></tbody>
 	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
 	    </table>
 	
 		<label for="studentTableUnassign">Seleziona uno Studente:</label>
 	    <table id="studentTableUnassign">
+			<tbody></tbody>
 	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
 	    </table>
 	</div>
