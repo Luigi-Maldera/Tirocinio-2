@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -25,9 +27,20 @@ public class Classe {
     private String nome;
     private String anno;
     
-    @OneToMany(mappedBy = "classe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)    
+    /*@OneToMany(mappedBy = "classe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)    
     @JsonIgnoreProperties("classe")
-    private List<ProfessoreScuola> professori;
+    private List<ProfessoreScuola> professori;*/
+    
+    /*@ManyToMany(mappedBy = "classi")
+    @JsonIgnoreProperties("classi")*/
+    @ManyToMany
+    @JoinTable(
+        name = "professore_classe",
+        joinColumns = @JoinColumn(name = "classe_id"),
+        inverseJoinColumns = @JoinColumn(name = "professore_id")
+    )
+    @JsonIgnoreProperties("classi")
+    private Set<ProfessoreScuola> professori = new HashSet<>();
 
     @OneToMany(mappedBy = "classe",cascade = CascadeType.ALL)
     @JsonIgnoreProperties("classe")
@@ -54,10 +67,8 @@ public class Classe {
 		this.nome = nome;
 	}
 
-	
-
 	public List<Studente> getStudenti() {
-		return studenti;
+		return studenti != null ? studenti : new ArrayList<>();
 	}
 
 	public void setStudenti(List<Studente> studenti) {
@@ -68,13 +79,21 @@ public class Classe {
 	}
 
 
-	public List<ProfessoreScuola> getProfessori() {
+	/*public List<ProfessoreScuola> getProfessori() {
 		return professori;
 	}
 
 	public void setProfessori(List<ProfessoreScuola> professori) {
 		this.professori = professori;
-	}
+	}*/
+	
+	public Set<ProfessoreScuola> getProfessori() {
+        return professori;
+    }
+
+    public void setProfessori(Set<ProfessoreScuola> professori) {
+        this.professori = professori;
+    }
 
 	public String getAnno() {
 		return anno;
@@ -84,12 +103,6 @@ public class Classe {
 		this.anno = anno;
 	}
 
-	public void addProfessore(ProfessoreScuola professore) {
-        if (this.professori == null) {
-            this.professori = new ArrayList<>();
-        }
-        this.professori.add(professore);
-    }
 
     public void addStudente(Studente studente) {
         if (this.studenti == null) {
@@ -98,16 +111,36 @@ public class Classe {
         this.studenti.add(studente);
     }
     
-    public void removeProfessore(ProfessoreScuola professore) {
-        if (professori != null) {
-            professori.remove(professore);
-            professore.setClasse(null);
+    public void addProfessori(ProfessoreScuola professore) {
+        // Assicurati che la lista dei professori non sia nulla
+        if (professori == null) {
+            professori = new HashSet<>();
+        }
+        // Aggiungi il professore alla lista solo se non è già presente
+        if (!professori.contains(professore)) {
+            professori.add(professore);
+            // Aggiungi la classe al professore
+            professore.addClassi(this);
         }
     }
+    
     
     public void removeStudente(Studente studente) {
     	studenti.remove(studente);
     	studente.setClasse(null);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Classe other = (Classe) o;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 	/*public CoordinatoreClasse getCoordinatore() {

@@ -49,6 +49,9 @@ public class ProfessoreScuolaService {
             if (professore.getMateria() != null) {
                 updatedProfessore.setMateria(professore.getMateria());
             }
+            if (professore.getImmagine() != null) {
+            	updatedProfessore.setImmagine(professore.getImmagine());
+            }
             // Aggiungi altri campi che desideri aggiornare
 
             // Salva il professore esistente con i nuovi dati

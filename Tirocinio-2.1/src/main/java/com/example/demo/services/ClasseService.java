@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -64,51 +65,23 @@ public class ClasseService {
             if (updatedClasse.getAnno() != null) {
                 currentClasse.setAnno(updatedClasse.getAnno());
             }
+            
+         // Aggiungi professori alla classe
+         Set<ProfessoreScuola> professori = updatedClasse.getProfessori();
+         if (professori != null) {
+             // Aggiungi i nuovi professori alla lista esistente
+             currentClasse.getProfessori().addAll(professori);
+             for (ProfessoreScuola professore : professori) {
+                 // Aggiungi la classe al professore solo se non è già presente
+                 if (!professore.getClassi().contains(currentClasse)) {
+                     professore.addClassi(currentClasse);
+                     currentClasse.addProfessori(professore);
+                 }
+             }
+         }
 
-            // Log professori input data
-            List<ProfessoreScuola> professori = updatedClasse.getProfessori();
-            if (professori != null) {
-                System.out.println("Input Professori: " + professori.toString());
-            }
-
-            // Aggiungi professori alla classe
-            if (professori != null) {
-                for (ProfessoreScuola professore : professori) {
-                    // Verifica se il professore ha un ID valido
-                    if (professore.getId() != null) {
-                        ProfessoreScuola existingProfessore = professoreRepository.findById(professore.getId()).orElse(null);
-                        if (existingProfessore != null && !currentClasse.getProfessori().contains(existingProfessore)) {
-                            // Copia solo i campi non nulli dalla richiesta al professore esistente
-                            if (professore.getNome() != null) {
-                                existingProfessore.setNome(professore.getNome());
-                            }
-                            if (professore.getCognome() != null) {
-                                existingProfessore.setCognome(professore.getCognome());
-                            }
-                            if (professore.getEta() != null) {
-                                existingProfessore.setEta(professore.getEta());
-                            }
-                            if (professore.getIndirizzo() != null) {
-                                existingProfessore.setIndirizzo(professore.getIndirizzo());
-                            }
-                            if (professore.getMateria() != null) {
-                                existingProfessore.setMateria(professore.getMateria());
-                            }
-                            // Altre proprietà...
-                            // Aggiungi il professore esistente alla lista della classe
-                            currentClasse.addProfessore(existingProfessore);
-                            existingProfessore.setClasse(currentClasse);
-
-                        }
-                    } else {
-                        // Se il professore non ha un ID valido, aggiungilo direttamente alla classe
-                        professore.setClasse(currentClasse);
-                        currentClasse.addProfessore(professore);
-
-                    }
-                }
-            }
-
+            
+            
             // Log studenti input data
             List<Studente> studenti = updatedClasse.getStudenti();
             if (studenti != null) {
@@ -150,16 +123,12 @@ public class ClasseService {
                 }
             }
 
-            
-            
-            // Rimuovi professori dalla classe
-            List<ProfessoreScuola> professoriToRemove = updatedClasse.getProfessori().stream()
+         // Rimuovi professori dalla classe
+            Set<ProfessoreScuola> professoriToRemove = updatedClasse.getProfessori().stream()
                     .filter(professore -> "remove".equalsIgnoreCase(professore.getAction()))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
             for (ProfessoreScuola professoreToRemove : professoriToRemove) {
-                professoreToRemove.setClasse(null);
-                //professoreRepository.save(professoreToRemove);
-                currentClasse.removeProfessore(professoreToRemove);	// Rimuovi l'associazione con la classe
+                professoreToRemove.removeClassi(currentClasse); // Rimuovi la classe dal professore
             }
             currentClasse.getProfessori().removeAll(professoriToRemove);
 
@@ -177,15 +146,12 @@ public class ClasseService {
          // Salva la classe esistente con i nuovi dati
             Classe savedClasse = classeRepository.save(currentClasse);
 
-            // Aggiorna manualmente le associazioni bidirezionali per i professori rimossi
-            for (ProfessoreScuola professore : professoriToRemove) {
-                professoreRepository.updateClasseReferenceToNull(professore.getId());
-            }
 
             // Aggiorna manualmente le associazioni bidirezionali per gli studenti rimossi
             for (Studente studente : studentiToRemove) {
                 studenteRepository.updateClasseReferenceToNull(studente.getId());
             }
+            
 
             return savedClasse;
         } else {

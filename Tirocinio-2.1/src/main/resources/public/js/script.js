@@ -39,22 +39,35 @@ function displayProfessors(professors) {
     tableBody.empty();
 
     professors.forEach(professor => {
+		professorImageURL = professor.immagine ? professor.immagine : 'https://as1.ftcdn.net/v2/jpg/01/77/92/30/1000_F_177923094_VqkPl9KoP9cQMlV89zZL7oqjBDegyGAK.jpg';
         tableBody.append(`
-            <tr id="professor-table-row-${professor.id}"> <!-- Modificato l'ID del record della tabella -->
+            <tr id="professor-table-row-${professor.id}">
                 <td>${professor.id}</td>
-                <td>${professor.nome}</td>
-                <td>${professor.cognome}</td>
-                <td>${professor.materia}</td>
-                <td>
-			        <button onclick="showDetails('professor', ${professor.id})">Dettagli</button>
-			        <button onclick="showEditForm('professor', ${professor.id})">Modifica</button>
-			        <button onclick="deleteEntity('professor', ${professor.id})">Elimina</button>
-			    </td>
+                <td class="small-on-mobile">${professor.nome}</td>
+                <td class="small-on-mobile">${professor.cognome}</td>
+                <td class="small-on-mobile d-none d-md-table-cell">${professor.materia}</td>
+                <td class="small-on-mobile d-none d-lg-table-cell">
+                	<div class="d-flex align-items-center">
+	                	<img src="${professorImageURL}" alt="${professor.nome} ${professor.cognome}" class="professor-image d-none d-md-table-cell mr-2">
+	                    <button class="btn btn-sm btn-info" onclick="showDetails('professor', ${professor.id})">Dettagli</button>
+	                    <button class="btn btn-sm btn-primary mx-1" onclick="showEditForm('professor', ${professor.id})">Modifica</button>
+	                    <button class="btn btn-sm btn-danger" onclick="deleteEntity('professor', ${professor.id})">Elimina</button>
+	                 </div>
+                </td>
+            </tr>
+            <tr class="small-on-mobile d-lg-none">
+                <td colspan="4">
+                    <button class="btn btn-sm btn-info" onclick="showDetails('professor', ${professor.id})">Dettagli</button>
+                    <button class="btn btn-sm btn-primary mx-1" onclick="showEditForm('professor', ${professor.id})">Modifica</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEntity('professor', ${professor.id})">Elimina</button>
+                </td>
             </tr>
         `);
     });
     $('#professor-table').fadeIn();
 }
+
+
 
 
 function getClasses() {
@@ -83,18 +96,24 @@ function displayClasses(classes) {
     classes.forEach(classe => {
         tableBody.append(`
             <tr id="class-table-row-${classe.id}"> <!-- Modificato l'ID del record della tabella -->
-                <td>${classe.id}</td>
-                <td>${classe.nome}</td>
-                <td>${classe.anno}</td>
-                <td>
-                    <button onclick="showDetails('class', ${classe.id})">Dettagli</button>
-                    <button onclick="showEditForm('class', ${classe.id})">Modifica</button>
-                    <button onclick="deleteEntity('class', ${classe.id})">Elimina</button>
+                <td class="small-on-mobile">${classe.id}</td>
+                <td class="small-on-mobile">${classe.nome}</td>
+                <td class="small-on-mobile">${classe.anno}</td>
+                <td class="small-on-mobile d-none d-lg-table-cell">
+                    <button class="btn btn-sm btn-info" onclick="showDetails('class', ${classe.id})">Dettagli</button>
+                    <button class="btn btn-sm btn-primary" onclick="showEditForm('class', ${classe.id})">Modifica</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEntity('class', ${classe.id})">Elimina</button>
+                </td>
+            </tr>
+            <tr class="small-on-mobile d-lg-none">
+                <td colspan="4">
+                    <button class="btn btn-sm btn-info" onclick="showDetails('class', ${classe.id})">Dettagli</button>
+                    <button class="btn btn-sm btn-primary mx-1" onclick="showEditForm('class', ${classe.id})">Modifica</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEntity('class', ${classe.id})">Elimina</button>
                 </td>
             </tr>
         `);
     });
-    $('#class-table').fadeIn();
 }
 
 function getStudents() {
@@ -120,16 +139,27 @@ function displayStudents(students) {
     tableBody.empty();
 
     students.forEach(student => {
+		const studentImageURL = student.immagine ? student.immagine : 'https://img.freepik.com/premium-photo/little-man-student-studying-university_532963-962.jpg';
         tableBody.append(`
-            <tr id="student-table-row-${student.id}"> <!-- Modificato l'ID del record della tabella -->
-                <td>${student.id}</td>
-                <td>${student.nome}</td>
-                <td>${student.cognome}</td>
-                <td>${student.classe ? student.classe.nome : 'N/D'}</td>
-                <td>
-                    <button onclick="showDetails('student', ${student.id})">Dettagli</button>
-                    <button onclick="showEditForm('student', ${student.id})">Modifica</button>
-                    <button onclick="deleteEntity('student', ${student.id})">Elimina</button>
+            <tr id="student-table-row-${student.id}"> 
+                <td class="small-on-mobile">${student.id}</td>
+                <td class="small-on-mobile">${student.nome}</td>
+                <td class="small-on-mobile">${student.cognome}</td>
+                <td class="d-none d-md-table-cell">${student.classe ? student.classe.nome : 'N/D'}</td>
+                <td class="small-on-mobile d-none d-lg-table-cell">
+                	<div class="d-flex align-items-center">
+	                	<img src="${studentImageURL}" alt="${student.nome} ${student.cognome}" class="student-image d-none d-md-table-cell mr-2">
+                    	<button class="btn btn-sm btn-info" onclick="showDetails('student', ${student.id})">Dettagli</button>
+                    	<button class="btn btn-sm btn-primary" onclick="showEditForm('student', ${student.id})">Modifica</button>
+                    	<button class="btn btn-sm btn-danger" onclick="deleteEntity('student', ${student.id})">Elimina</button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="small-on-mobile d-lg-none">
+                <td colspan="4">
+                    <button class="btn btn-sm btn-info" onclick="showDetails('student', ${student.id})">Dettagli</button>
+                    <button class="btn btn-sm btn-primary mx-1" onclick="showEditForm('student', ${student.id})">Modifica</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEntity('student', ${student.id})">Elimina</button>
                 </td>
             </tr>
         `);
@@ -404,7 +434,19 @@ function showDetails(entityType, entityId) {
                     detailsContainer.append(`<p>Età: ${data.eta}</p>`);
                     detailsContainer.append(`<p>Indirizzo: ${data.indirizzo}</p>`);
                     detailsContainer.append(`<p>Materia: ${data.materia}</p>`);
-                    detailsContainer.append(`<p>Classe Assegnata: ${(data.classe ? data.classe.nome : 'N/D')}</p>`);
+                    console.log(data.immagine);
+                    if(data.immagine){
+                    detailsContainer.append(`<img src="${data.immagine}" alt="${data.nome} ${data.cognome}" class="professor-image">`);}
+                    if (data.classi && data.classi.length > 0) {
+				        detailsContainer.append(`<p>Classi Assegnate:</p>`);
+				        const classiList = $('<ul></ul>');
+				        data.classi.forEach(classe => {
+				            classiList.append(`<li>${classe.nome} - Anno: ${classe.anno}</li>`);
+				        });
+				        detailsContainer.append(classiList);
+				    } else {
+				        detailsContainer.append(`<p>Classi Assegnate: N/D</p>`);
+				    }
                     break;
 
                 case 'class':
@@ -423,11 +465,15 @@ function showDetails(entityType, entityId) {
                     detailsContainer.append(`<p>Cognome: ${data.cognome}</p>`);
                     detailsContainer.append(`<p>Età: ${data.eta}</p>`);
                     detailsContainer.append(`<p>Indirizzo: ${data.indirizzo}</p>`);
+                    if(data.immagine){
+                    detailsContainer.append(`<img src="${data.immagine}" alt="${data.nome} ${data.cognome}" class="student-image">`);}
                     detailsContainer.append(`<p>Classe Assegnata: ${(data.classe ? data.classe.nome : 'N/D')}</p>`);
                     break;
 
             }
             detailsContainer.append(`<button onclick="cancelEdit('${entityType}')">Chiudi</button>`);
+            detailsContainer.append(`<button onclick="showEditForm('${entityType}', ${data.id})">Modifica</button>`);
+
         },
         error: function (error) {
             handleCommonErrorCases(error);
@@ -435,59 +481,333 @@ function showDetails(entityType, entityId) {
     });
 }
 
+
+
+function showAssignmentTables() {
+	$('#studentSelection').show();
+    $('#professorSelection').show();
+    $('#studentTable').show();
+    $('#professorTable').show();
+    $('#studentSelectionUnassign').hide();
+    $('#professorSelectionUnassign').hide();
+    $('#studentTableUnassign').hide();
+    $('#professorTableUnassign').hide();
+    $('#assignButton').show();
+    $('#unassignButton').hide();
+    getStudentsList(function(studentsList) {
+        displayStudentsList(studentsList);
+        showStudentsWithoutClass();
+    });
+    getProfessorsList(displayProfessorsList);
+}
+
+function showDisassignmentTables(currentClassId) {
+	$('#studentSelection').hide();
+    $('#professorSelection').hide();
+    $('#studentTable').hide();
+    $('#professorTable').hide();
+    $('#studentSelectionUnassign').show();
+    $('#professorSelectionUnassign').show();
+    $('#studentTableUnassign').show();
+    $('#professorTableUnassign').show();
+    $('#assignButton').hide();
+    $('#unassignButton').show();
+    getStudentsList(function(studentsList) {
+        const filteredStudents = studentsList.filter(student => student.classe && student.classe.id === currentClassId);
+        displayStudentsList(filteredStudents);
+    });
+    getProfessorsList(function(professorsList) {
+        const filteredProfessors = professorsList.filter(professor => professor.classi && professor.classi.find(classe => classe.id === currentClassId));
+        displayProfessorsList(filteredProfessors);
+    });
+}
+
+// Funzione per assegnare un professore a una classe
+function assignClass(professorId, classId) {
+    const token = localStorage.getItem('token');
+    const payload = {
+        "professori": [{ "id": professorId }],
+        "studenti": []
+    };
+
+    updateClass(classId, payload);
+    alert("Assegnazione completata con successo!");
+}
+
+// Funzione per disassegnare un professore da una classe
+function removeAssignment(professorId, classId) {
+    const token = localStorage.getItem('token');
+    const payload = {
+        "professori": [{ "id": professorId, "action": "remove" }],
+        "studenti": []
+    };
+
+    updateClass(classId, payload);
+    alert("Disassegnazione completata con successo!");
+}
+
+// Funzione per assegnare uno studente a una classe
+function assignClass2(studentId, classId) {
+    const token = localStorage.getItem('token');
+    const payload = {
+        "professori": [],
+        "studenti": [{ "id": studentId }]
+    };
+
+    updateClass(classId, payload);
+    alert("Assegnazione completata con successo!");
+}
+
+// Funzione per disassegnare uno studente da una classe
+function removeAssignment2(studentId, classId) {
+    const token = localStorage.getItem('token');
+    const payload = {
+        "professori": [],
+        "studenti": [{ "id": studentId, "action": "remove" }]
+    };
+
+    updateClass(classId, payload);
+    alert("Disassegnazione completata con successo!");
+}
+
+
 function showEditForm(entityType, entityId) {
     const token = localStorage.getItem('token');
-	$(`#${entityType}-table`).fadeOut();
+    const entityTable = $(`#${entityType}-table`);
+    entityTable.fadeOut();
     $.ajax({
-        url: `/api/${entityType}i/${entityId}`,
+        url: `/api/classi`,
         type: 'GET',
         headers: {
             'Authorization': 'Bearer ' + token
         },
-        success: function (data) {
-            const detailsContainer = $(`#${entityType}-details-container`);
-            detailsContainer.empty();
-            const editFormContainer = $(`#${entityType}-edit-form-container`);
-            editFormContainer.empty();
+        success: function (allClasses) {
+            console.log(allClasses);
+            $.ajax({
+                url: `/api/${entityType}i/${entityId}`,
+                type: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function (data) {
+                    const detailsContainer = $(`#${entityType}-details-container`);
+                    detailsContainer.empty();
+                    const editFormContainer = $(`#${entityType}-edit-form-container`);
+                    editFormContainer.empty();
 
-            switch (entityType) {
-                case 'professor':
-                    editFormContainer.append(`<h2>Modifica Professore</h2>`);
-                    editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
-                    editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
-                    editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
-                    editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
-                    editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
-                    editFormContainer.append(`<label for="materia">Materia:</label> <input type="text" name="materia" value="${data.materia}"><br>`);
-                    break;
+                    switch (entityType) {
+                        case 'professor':
+							const currentProfessorId = data.id;
+                            editFormContainer.append(`<h2>Modifica Professore</h2>`);
+                            editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
+                            // Aggiungi campo di input per caricare una nuova immagine
+					        editFormContainer.append(`<label for="immagine">Nuova Immagine:</label> <input type="hidden" name="immagine"> <input type="file" name="nuova-immagine" accept="image/*"><br>`);
+					        // Mostra l'immagine attuale del professore
+					        if(data.immagine){
+					        	editFormContainer.append(`<img alt="Immagine del Professore" src="${data.immagine}" class="preview-image" name="immagine"><br>`);
+					        } else {
+						        editFormContainer.append(`<img alt="" src="" class="preview-image" name="immagine"><br>`);
+						    }
+                            editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
+                            editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
+                            editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
+                            editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
+                            editFormContainer.append(`<label for="materia">Materia:</label> <input type="text" name="materia" value="${data.materia}"><br>`);
+                            editFormContainer.append(`<label for="classe">Seleziona una classe:</label>`);
+                            const classeSelect = $(`<select name="classe"></select>`);
+                            allClasses.forEach(classe => {
+                                classeSelect.append(`<option value="${classe.id}">${classe.nome} - Anno: ${classe.anno}</option>`);
+                            });
+                            editFormContainer.append(classeSelect);
+                            editFormContainer.append(`<button onclick="assignClass(${currentProfessorId}, $('select[name=classe]').val())">Assegna Classe</button><br>`);
+                            
+                            // Visualizza le classi già assegnate con il pulsante per disassegnarle
+						    if (data.classi && data.classi.length > 0) {
+						        editFormContainer.append(`<p>Classi Assegnate:</p>`);
+						        const classiList = $('<ul></ul>');
+						        data.classi.forEach(classe => {
+						            classiList.append(`<li>${classe.nome} - Anno: ${classe.anno} <button onclick="removeAssignment(${currentProfessorId}, ${classe.id})">X</button></li>`);
+						        });
+						        editFormContainer.append(classiList);
+						    } else {
+						        editFormContainer.append(`<p>Classi Assegnate: N/D</p>`);
+						    }
 
-                case 'class':
-                    editFormContainer.append(`<h2>Modifica Classe</h2>`);
-                    editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
-                    editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
-                    editFormContainer.append(`<label for="anno">Anno:</label> <input type="text" name="anno" value="${data.anno}"><br>`);
-                    break;
+                            break;
 
-                case 'student':
-                    editFormContainer.append(`<h2>Modifica Studente</h2>`);
-                    editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
-                    editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
-                    editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
-                    editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
-                    editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
-                    break;
+                        case 'class':
+							const currentClassId = data.id;
+                            editFormContainer.append(`<h2>Modifica Classe</h2>`);
+                            editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
+                            editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
+                            editFormContainer.append(`<label for="anno">Anno:</label> <input type="text" name="anno" value="${data.anno}"><br>`);
+                            editFormContainer.append(`<button onclick="showAssignmentTables()">Assegna Studenti e Professori</button>`);
+                            editFormContainer.append(`<button onclick="showDisassignmentTables(${currentClassId})">Disassegna Studenti e Professori</button>`);
+                            
+    						editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente da Assegnare</h3>`);
+						    const studentTable = $('<table id="studentTable" style="display: none;"></table>');
+						    editFormContainer.append(studentTable);
+						    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore da Assegnare</h3>`);
+						    const professorTable = $('<table id="professorTable" style="display: none;"></table>');
+						    editFormContainer.append(professorTable);
+						    editFormContainer.append(`<button id="assignButton" style="display:none;" onclick="assignStudentsAndProfessors('both', ${currentClassId})">Assegna</button>`);
+						    editFormContainer.append(`<h3 id="studentSelectionUnassign" style="display: none;">Seleziona lo Studente da Disassegnare</h3>`);
+						    const studentTableUnassign = $('<table id="studentTableUnassign" style="display: none;"></table>');
+						    editFormContainer.append(studentTableUnassign);
+						    editFormContainer.append(`<h3 id="professorSelectionUnassign" style="display: none;">Seleziona il Professore da Disassegnare</h3>`);
+						    const professorTableUnassign = $('<table id="professorTableUnassign" style="display: none;"></table>');
+						    editFormContainer.append(professorTableUnassign);
+						    editFormContainer.append(`<button id="unassignButton" style="display:none;" onclick="unassignStudentsAndProfessors('both', ${currentClassId})">Disassegna</button>`);
+                            break;
 
-            }
-            
-            editFormContainer.append(`<button onclick="submitEditForm('${entityType}')">Salva Modifiche</button>`);
-            editFormContainer.append(`<button onclick="cancelEdit('${entityType}')">Annulla</button>`);
+                        case 'student':
+							const currentStudentId = data.id;
+                            editFormContainer.append(`<h2>Modifica Studente</h2>`);
+                            editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
+                            // Aggiungi campo di input per caricare una nuova immagine
+					        editFormContainer.append(`<label for="immagine">Nuova Immagine:</label> <input type="hidden" name="immagine"> <input type="file" name="nuova-immagine" accept="image/*"><br>`);
+					        // Mostra l'immagine attuale del professore
+					        if(data.immagine){
+					        	editFormContainer.append(`<img alt="Immagine dello Studente" src="${data.immagine}" class="preview-image" name="immagine"><br>`);
+					        } else {
+						        editFormContainer.append(`<img alt="" src="" class="preview-image" name="immagine"><br>`);
+						    }
+                            editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
+                            editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
+                            editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
+                            editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
+                            // Aggiungi selezione della classe
+                             editFormContainer.append(`<label for="classe">Seleziona una classe:</label>`);
+                            const classeSelect2 = $(`<select name="classe"></select>`);
+                            allClasses.forEach(classe => {
+                                // Verifica se lo studente è già assegnato a questa classe
+                                const isAssigned = data.classe && data.classe.id === classe.id;
+                                classeSelect2.append(`<option value="${classe.id}" ${isAssigned ? 'disabled' : ''}>${classe.nome} - Anno: ${classe.anno}</option>`);
+                            });
+                            editFormContainer.append(classeSelect2);
+                            
+                            // Bottone per assegnare la classe (abilitato solo se non è già assegnato)
+                            editFormContainer.append(`<button onclick="assignClass2(${currentStudentId}, $('select[name=classe]').val())" ${data.classe ? 'disabled' : ''}>Assegna Classe</button><br>`);
+                            
+                            // Visualizza la classe già assegnata se presente
+                            if (data.classe) {
+                                editFormContainer.append(`<p>Classe Assegnata: ${data.classe.nome} - Anno: ${data.classe.anno}</p>`);
+                                
+                                // Aggiungi pulsante per disassegnare la classe
+                                editFormContainer.append(`<button onclick="removeAssignment2(${currentStudentId}, ${data.classe.id})">Disassegna Classe</button>`);
+                            } else {
+                                editFormContainer.append(`<p>Classe Assegnata: N/D</p>`);
+                            }
+                            break;
 
+                    }
+
+                    editFormContainer.append(`<button onclick="submitEditForm('${entityType}')">Salva Modifiche</button>`);
+                    editFormContainer.append(`<button onclick="cancelEdit('${entityType}')">Annulla</button>`);
+                    
+                    
+                    // Aggiungi un evento change all'input file nel form di creazione
+				    $('input[name=nuova-immagine]').on('change', async function(event) {
+				        const imageFile = event.target.files[0];
+				        const immagine = await convertImageToBase64(imageFile);
+				        // Inserisci la stringa Base64 nell'immagine del form
+				        $(this).siblings('img[name=immagine]').attr('src', immagine);
+				        $(this).siblings('input[name=immagine]').attr('src', immagine);
+				        $(this).siblings('input[name=immagine]').attr('value', immagine);
+				        $(this).attr('src', immagine);
+				    });
+
+                },
+                error: function (error) {
+                    handleCommonErrorCases(error);
+                }
+            });
         },
         error: function (error) {
             handleCommonErrorCases(error);
         }
     });
 }
+
+function assignStudentsAndProfessors(classType, classId) {
+    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
+    var selectedProfessors = $("#professorTable input[type='checkbox']:checked").map(function() {
+        return this.value;
+    }).get();
+
+    var selectedStudents = $("#studentTable input[type='checkbox']:checked").map(function() {
+        return this.value;
+    }).get();
+
+    // Verifica se almeno un professore o studente è stato selezionato
+    if (selectedProfessors.length > 0 || selectedStudents.length > 0) {
+        var payload = {
+            "professori": [],
+            "studenti": []
+        };
+
+        // Aggiungi professori al payload se la classe è di tipo professore
+        if (classType === "professor" || classType === "both") {
+            selectedProfessors.forEach(function (id) {
+                payload.professori.push({ "id": parseInt(id) });
+            });
+        }
+
+        // Aggiungi studenti al payload se la classe è di tipo studente
+        if (classType === "student" || classType === "both") {
+            selectedStudents.forEach(function (id) {
+                payload.studenti.push({ "id": parseInt(id) });
+            });
+        }
+
+        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
+        updateClass(classId, payload);
+        alert("Assegnazione completata con successo!");
+    } else {
+        alert('Seleziona almeno un professore o studente per l\'assegnazione.');
+    }
+}
+
+function unassignStudentsAndProfessors(classType, classId) {
+    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
+    var selectedProfessors = $("#professorTableUnassign input[type='checkbox']:checked").map(function() {
+        return this.value;
+    }).get();
+
+    var selectedStudents = $("#studentTableUnassign input[type='checkbox']:checked").map(function() {
+        return this.value;
+    }).get();
+
+    // Verifica se almeno un professore o studente è stato selezionato
+    if (selectedProfessors.length > 0 || selectedStudents.length > 0) {
+        var payload = {
+            "professori": [],
+            "studenti": []
+        };
+
+        // Aggiungi professori al payload se la classe è di tipo professore
+        if (classType === "professor" || classType === "both") {
+            selectedProfessors.forEach(function (id) {
+                payload.professori.push({ "id": parseInt(id), "action": "remove" });
+            });
+        }
+
+        // Aggiungi studenti al payload se la classe è di tipo studente
+        if (classType === "student" || classType === "both") {
+            selectedStudents.forEach(function (id) {
+                payload.studenti.push({ "id": parseInt(id), "action": "remove" });
+            });
+        }
+
+        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
+        updateClass(classId, payload);
+        alert("Disassegnazione completata con successo!");
+    } else {
+        alert('Seleziona almeno un professore o studente per la disassegnazione.');
+    }
+}
+
+
 
 function cancelEdit(entityType) {
     const editFormContainer = $(`#${entityType}-edit-form-container`);
@@ -615,12 +935,19 @@ function showCreateForm(entityType) {
             editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta"><br>`);
             editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo"><br>`);
             editFormContainer.append(`<label for="materia">Materia:</label> <input type="text" name="materia"><br>`);
+           	editFormContainer.append(`<label for="immagine">Immagine del Professore:</label> <input type="hidden" name="immagine"> <input type="file" name="immagine1" accept="image/*"><br>`);
+            editFormContainer.append(`<img alt="Immagine del Professore" src="" class="preview-image" name="immagine">`);
+            editFormContainer.append(`<button onclick="submitCreateForm('${entityType}')">Crea</button>`);
+    		editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Annulla</button>`);
+    		console.log(immagine);
             break;
 
         case 'class':
             editFormContainer.append(`<h2>Crea Classe</h2>`);
             editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome"><br>`);
             editFormContainer.append(`<label for="anno">Anno:</label> <input type="text" name="anno"><br>`);
+            editFormContainer.append(`<button onclick="submitCreateForm('${entityType}')">Crea</button>`);
+    		editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Annulla</button>`);
             break;
 
         case 'student':
@@ -629,11 +956,36 @@ function showCreateForm(entityType) {
             editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome"><br>`);
             editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta"><br>`);
             editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo"><br>`);
+            editFormContainer.append(`<label for="immagine">Immagine dello Studente:</label> <input type="hidden" name="immagine"> <input type="file" name="immagine1" accept="image/*"><br>`);
+            editFormContainer.append(`<img alt="Immagine dello Studente" src="" class="preview-image" name="immagine">`);
+            editFormContainer.append(`<button onclick="submitCreateForm('${entityType}')">Crea</button>`);
+    		editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Annulla</button>`);
             break;
     }
+    // Aggiungi un evento change all'input file nel form di creazione
+    $('input[name=immagine1]').on('change', async function(event) {
+        const imageFile = event.target.files[0];
+        const immagine = await convertImageToBase64(imageFile);
+        // Inserisci la stringa Base64 nell'immagine del form
+        $(this).siblings('img[name=immagine]').attr('src', immagine);
+        $(this).siblings('input[name=immagine]').attr('src', immagine);
+        $(this).siblings('input[name=immagine]').attr('value', immagine);
+        $(this).attr('src', immagine);
+    });
+}
 
-    editFormContainer.append(`<button onclick="submitCreateForm('${entityType}')">Crea</button>`);
-    editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Annulla</button>`);
+// Funzione per convertire un'immagine in Base64
+function convertImageToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+    reader.onerror = error => {
+      reject(error);
+    };
+  });
 }
 
 function cancelCreate(entityType) {
@@ -667,9 +1019,34 @@ function submitCreateForm(entityType) {
         success: function (data) {
             console.log('Dati creati con successo:', data);
             editFormContainer.empty();
-            $('#professor-table').show();
-            $('#class-table').show();
-            $('#student-table').show();
+            // Se l'entityType è 'class', mostriamo i pulsanti di assegnazione e disassegnazione solo dopo aver creato la classe
+            if (entityType === 'class') {
+                editFormContainer.append(`<button id="ass" style="display:none;" onclick="showAssignmentTables()">Assegna Studenti e Professori</button>`);
+                editFormContainer.append(`<button id="disass" style="display:none;" onclick="showDisassignmentTables(${data.id})">Disassegna Studenti e Professori</button>`);
+                editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Indietro</button>`);
+                editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente da Assegnare</h3>`);
+			    const studentTable = $('<table id="studentTable" style="display: none;"></table>');
+			    editFormContainer.append(studentTable);
+			    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore da Assegnare</h3>`);
+			    const professorTable = $('<table id="professorTable" style="display: none;"></table>');
+			    editFormContainer.append(professorTable);
+			    editFormContainer.append(`<button id="assignButton" style="display:none;" onclick="assignStudentsAndProfessors('both', ${data.id})">Assegna</button>`);
+			    editFormContainer.append(`<h3 id="studentSelectionUnassign" style="display: none;">Seleziona lo Studente da Disassegnare</h3>`);
+			    const studentTableUnassign = $('<table id="studentTableUnassign" style="display: none;"></table>');
+			    editFormContainer.append(studentTableUnassign);
+			    editFormContainer.append(`<h3 id="professorSelectionUnassign" style="display: none;">Seleziona il Professore da Disassegnare</h3>`);
+			    const professorTableUnassign = $('<table id="professorTableUnassign" style="display: none;"></table>');
+			    editFormContainer.append(professorTableUnassign);
+			    editFormContainer.append(`<button id="unassignButton" style="display:none;" onclick="unassignStudentsAndProfessors('both', ${data.id})">Disassegna</button>`);
+                // Se l'ID della classe è definito, mostriamo i pulsanti di assegnazione e disassegnazione
+                if (data.id) {
+                    editFormContainer.find('#ass').show();
+                    editFormContainer.find('#disass').show();
+                }
+            } else {
+                $('#professor-table').show();
+                $('#student-table').show();
+            }
             switch (entityType) {
                 case 'professor':
                     getProfessors();
@@ -687,100 +1064,6 @@ function submitCreateForm(entityType) {
         }
     });
 }
-
-
-function assignToClass(classType) {
-    // Ottenere il valore selezionato dalla tabella delle classi
-    var classId = $("#classTable input[type='radio']:checked").val();
-
-    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
-    var selectedProfessors = $("#professorTable input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    var selectedStudents = $("#studentTable input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    // Verifica se la classe e almeno un professore o studente sono stati selezionati
-    if (classId && (selectedProfessors.length > 0 || selectedStudents.length > 0)) {
-        var payload = {
-            "professori": [],
-            "studenti": []
-        };
-
-        // Aggiungi professori al payload se la classe è di tipo professore
-        if (classType === "professor" || classType === "both") {
-            selectedProfessors.forEach(function (id) {
-                payload.professori.push({ "id": parseInt(id) });
-            });
-        }
-
-        // Aggiungi studenti al payload se la classe è di tipo studente
-        if (classType === "student" || classType === "both") {
-            selectedStudents.forEach(function (id) {
-                payload.studenti.push({ "id": parseInt(id) });
-            });
-        }
-
-        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
-        updateClass(classId, payload);
-
-        // Aggiorna la tabella delle classi dopo l'assegnazione
-        getClassesList(displayClassesList);
-        alert("Assegnazione completata con successo!");
-    } else {
-        alert('Seleziona una classe e almeno un professore o studente per l\'assegnazione.');
-    }
-}
-
-
-
-function unassignToClass(classType) {
-    // Ottenere il valore selezionato dalla tabella delle classi
-    var classId = $("#classTableUnassign input[type='radio']:checked").val();
-
-    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
-    var selectedProfessors = $("#professorTableUnassign input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    var selectedStudents = $("#studentTableUnassign input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    // Verifica se la classe e almeno un professore o studente sono stati selezionati
-    if (classId && (selectedProfessors.length > 0 || selectedStudents.length > 0)) {
-        var payload = {
-            "professori": [],
-            "studenti": []
-        };
-
-        // Aggiungi professori al payload se la classe è di tipo professore
-        if (classType === "professor" || classType === "both") {
-            selectedProfessors.forEach(function (id) {
-                payload.professori.push({ "id": parseInt(id), "action": "remove" });
-            });
-        }
-
-        // Aggiungi studenti al payload se la classe è di tipo studente
-        if (classType === "student" || classType === "both") {
-            selectedStudents.forEach(function (id) {
-                payload.studenti.push({ "id": parseInt(id), "action": "remove" });
-            });
-        }
-
-        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
-        updateClass(classId, payload);
-
-        // Aggiorna la tabella delle classi dopo l'assegnazione
-        getClassesList(displayClassesList);
-        alert("Disassegnazione completata con successo!");
-    } else {
-        alert('Seleziona una classe e almeno un professore o studente per la disassegnazione.');
-    }
-}
-
 
 function getClassesList(callback) {
     const token = localStorage.getItem('token');
@@ -908,7 +1191,6 @@ function displayProfessorsList(professorsList) {
             '<td>' + professor.nome + '</td>' +
             '<td>' + professor.cognome + '</td>' +
             '<td>' + professor.materia + '</td>' +
-            '<td>' + (professor.classe ? professor.classe.nome : 'N/D') + '</td>' +
             '</tr>';
 
         professorTable.append(row);

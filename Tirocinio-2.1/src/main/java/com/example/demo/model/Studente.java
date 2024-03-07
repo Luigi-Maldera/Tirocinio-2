@@ -23,6 +23,7 @@ public class Studente {
     private Integer eta;
     private String indirizzo;
     private String action;
+    private String immagine;
     
     @ManyToOne
     @JoinColumn(name = "classe_id")
@@ -85,5 +86,12 @@ public class Studente {
 
     public void setAction(String action) {
         this.action = action;
+    }
+    public String getImmagine() {
+        return immagine;
+    }
+
+    public void setImmagine(String immagine) {
+        this.immagine = immagine;
     }
 }

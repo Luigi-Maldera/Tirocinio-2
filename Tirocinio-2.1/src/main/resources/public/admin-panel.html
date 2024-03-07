@@ -4,153 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-    <div id="admin-panel-container">
-        <h2>Admin Panel</h2>
+	
+<div id="admin-panel-container" class="container">
+    <h2 class="d-none d-lg-block">Admin Panel</h2>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light d-lg-none fixed-top">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand d-lg-none" href="#">Admin Panel</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('professor-section'),getProfessors()">Professori</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('class-section'),getClasses()">Classi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('student-section'),getStudents()">Studenti</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('create-admin-section')">Nuovo Admin</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-        <button onclick="showSection('professor-section'),getProfessors()">Professori</button>
-        <button onclick="showSection('class-section'),getClasses()">Classi</button>
-        <button onclick="showSection('student-section'),getStudents()">Studenti</button>
-        <button onclick="showSection('assign-section'),getClassesList(displayClassesList),getProfessorsList(displayProfessorsList),getStudentsList(displayStudentsList);">Assegnazioni</button>
-        <button onclick="showSection('unassign-section'),getClassesList(displayClassesList),getProfessorsList(displayProfessorsList),getStudentsList(displayStudentsList);">Disassegnazioni</button>
-        <button onclick="showSection('create-admin-section')">Nuovo Admin</button>
+    <button class="d-none d-lg-inline-block" onclick="showSection('professor-section'),getProfessors()">Professori</button>
+    <button class="d-none d-lg-inline-block" onclick="showSection('class-section'),getClasses()">Classi</button>
+    <button class="d-none d-lg-inline-block" onclick="showSection('student-section'),getStudents()">Studenti</button>
+    <button class="d-none d-lg-inline-block" onclick="showSection('create-admin-section')">Nuovo Admin</button>
 
 <div id="professor-section" class="section">
-	    <h3>Professori</h3>
-	    <button onclick="showCreateForm('professor')">Create Professore</button>
-
-    <table id="professor-table" hidden>
-        <thead>
-            <tr>
-				<th>ID</th>
-	            <th>Nome</th>
-	            <th>Cognome</th>
-	            <th>Materia</th>
-	            <th>Azioni</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <h3></h3><br>
+    <h3>Professori</h3>
+    <button onclick="showCreateForm('professor')">Create Professore</button>
+    <div class="table-responsive">
+        <table
+        	id="professor-table"
+        	class="table table-striped">
+            <thead>
+                <tr class="small-on-mobile">
+                    <th class="small-on-mobile">ID</th>
+                    <th class="small-on-mobile">Nome</th>
+                    <th class="small-on-mobile">Cognome</th>
+                    <th class="small-on-mobile d-none d-md-table-cell">Materia</th>
+                    <th class="small-on-mobile d-none d-lg-table-cell">Azioni</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     <div id="professor-details-container"></div>
     <div id="professor-edit-form-container"></div>
 </div>
 
-        <div id="class-section" class="section">
-	    <h3>Classi</h3>
-	    <button onclick="showCreateForm('class')">Create Classe</button>
-
-    <table id="class-table" hidden>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Anno</th>
-                <th>Azioni</th>
-                <!-- Altre colonne se necessario -->
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div id="class-section" class="section">
+    <h3></h3><br>
+    <h3>Classi</h3>
+    <button onclick="showCreateForm('class')">Create Classe</button>
+    <div class="table-responsive">
+        <table id="class-table" class="table table-bordered table-striped">
+            <thead>
+                <tr class="small-on-mobile">
+                    <th class="small-on-mobile">ID</th>
+                    <th class="small-on-mobile">Nome</th>
+                    <th class="small-on-mobile">Anno</th>
+                    <th class="small-on-mobile d-none d-lg-table-cell">Azioni</th>
+                    <!-- Altre colonne se necessario -->
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     <div id="class-details-container"></div>
     <div id="class-edit-form-container"></div>
 </div>
 
-		<div id="student-section" class="section">
-    	<h3>Studenti</h3>
-	    <button onclick="showCreateForm('student')">Create Studente</button>
-
-    <table id="student-table" hidden>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Cognome</th>
-                <th>Classe</th>
-                <th>Azioni</th>
-                <!-- Altre colonne se necessario -->
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div id="student-section" class="section">
+    <h3></h3><br>
+    <h3>Studenti</h3>
+    <button onclick="showCreateForm('student')">Create Studente</button>
+    <div class="table-responsive">
+        <table id="student-table" class="table table-striped">
+            <thead>
+                <tr class="small-on-mobile">
+                    <th class="small-on-mobile">ID</th>
+                    <th class="small-on-mobile">Nome</th>
+                    <th class="small-on-mobile">Cognome</th>
+                    <th class="small-on-mobile d-none d-md-table-cell">Classe</th>
+                    <th class="small-on-mobile d-none d-lg-table-cell">Azioni</th>
+                    <!-- Altre colonne se necessario -->
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     <div id="student-details-container"></div>
     <div id="student-edit-form-container"></div>
-</div>
-	<div id="assign-section" class="section">
-	    <h3>Assegnazioni</h3>
-		<button onclick="assignToClass('both');">Assegna</button>
-	    <br>
-	
-	    <label for="classTable">Seleziona una Classe:</label>
-	    <table id="classTable">
-	        <!-- La tabella delle classi verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	
-	    <label for="professorTable">Seleziona un Professore:</label>
-	    <button onclick="showProfessorsWithoutClass()">Mostra Professori Senza Classe</button>
-		<button onclick="resetProfessorFilter()">Mostra Tutti i Professori</button>
-	    <table id="professorTable">
-	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	
-		<label for="studentTable">Seleziona uno Studente:</label>
-		<button onclick="showStudentsWithoutClass()">Mostra Studenti Senza Classe</button>
-		<button onclick="resetStudentFilter()">Mostra Tutti gli Studenti</button>
-	    <table id="studentTable">
-	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	</div>
-
-	<div id="unassign-section" class="section">
-		<h3>Disassegnazioni</h3>
-		<button onclick="unassignToClass('both');">Disassegna</button>
-	    <br>
-	
-	    <label for="classTableUnassign">Seleziona una Classe:</label>
-	    <table id="classTableUnassign">
-			<tbody></tbody>
-	        <!-- La tabella delle classi verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	
-	    <label for="professorTableUnassign">Seleziona un Professore:</label>
-	    <table id="professorTableUnassign">
-			<tbody></tbody>
-	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	
-		<label for="studentTableUnassign">Seleziona uno Studente:</label>
-	    <table id="studentTableUnassign">
-			<tbody></tbody>
-	        <!-- La tabella dei professori verrà riempita dinamicamente tramite JavaScript -->
-	    </table>
-	</div>
-        
-        <div id="create-admin-section" class="section">
-			<label for="nome">Nome:</label>
-		    <input type="text" id="nome" required><br>
-		
-		    <label for="cognome">Cognome:</label>
-		    <input type="text" id="cognome" required><br>
-		
-		    <label for="eta">Età:</label>
-		    <input type="number" id="eta" required><br>
-		
-		    <label for="indirizzo">Indirizzo:</label>
-		    <input type="text" id="indirizzo" required><br>
-		
-		    <label for="username">Username:</label>
-		    <input type="text" id="username" required><br>
-		
-		    <label for="password">Password:</label>
-		    <input type="password" id="password" required><br>
-		
-		    <button onclick="registerAdmin()">Registra Admin</button>
-		</div>
+</div>	        
+	        <div id="create-admin-section" class="section">
+				<br> <br>
+				<label for="nome">Nome:</label>
+			    <input type="text" id="nome" required><br>
+			
+			    <label for="cognome">Cognome:</label>
+			    <input type="text" id="cognome" required><br>
+			
+			    <label for="eta">Età:</label>
+			    <input type="number" id="eta" required><br>
+			
+			    <label for="indirizzo">Indirizzo:</label>
+			    <input type="text" id="indirizzo" required><br>
+			
+			    <label for="username">Username:</label>
+			    <input type="text" id="username" required><br>
+			
+			    <label for="password">Password:</label>
+			    <input type="password" id="password" required><br>
+			
+			    <button onclick="registerAdmin()">Registra Admin</button>
+			</div>
 		
 </div>
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

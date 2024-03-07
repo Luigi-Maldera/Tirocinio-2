@@ -7,13 +7,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Table;
 import javax.persistence.InheritanceType;
 import javax.persistence.DiscriminatorType;
@@ -23,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-//@Table(name = "Professore_Scuola")
+@Table(name = "Professore_Scuola")
 //@Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class ProfessoreScuola {
@@ -36,11 +40,18 @@ public class ProfessoreScuola {
     private String indirizzo;
     private String materia;
     private String action;
+    private String immagine;
     // Altre proprietà e relazioni
     
-    @ManyToOne
-    @JoinColumn(name = "classe_id")
-    private Classe classe;
+    /*@ManyToMany
+    @JoinTable(
+        name = "professore_classe", // Nome della tabella di join
+        joinColumns = @JoinColumn(name = "professore_id"), // Colonna che fa riferimento ai professori
+        inverseJoinColumns = @JoinColumn(name = "classe_id") // Colonna che fa riferimento alle classi
+    )*/
+    @ManyToMany(mappedBy = "professori")
+    private Set<Classe> classi = new HashSet<>();
+
     
     /*@Column(name = "is_coordinatore")
     private Boolean isCoordinatore;*/
@@ -53,7 +64,7 @@ public class ProfessoreScuola {
 		this.eta = eta;
 	}
 
-	public Classe getClasse() {
+	/*public Classe getClasse() {
 		return classe;
 	}
 
@@ -62,6 +73,15 @@ public class ProfessoreScuola {
         if (classe != null) {
             this.classe = classe;
         }
+    }*/
+	
+	 // Getter e setter per la relazione many-to-many con le classi
+    public Set<Classe> getClassi() {
+        return classi;
+    }
+
+    public void setClassi(Set<Classe> classi) {
+        this.classi = classi;
     }
 	
 
@@ -126,6 +146,32 @@ public class ProfessoreScuola {
 	public void setAction(String action) {
 	    this.action = action;
 	}
+	
+	public void addClassi(Classe classe) {
+        // Assicurati che la lista delle classi non sia nulla
+        if (classi == null) {
+            classi = new HashSet<>();
+        }
+        // Aggiungi la classe alla lista solo se non è già presente
+        if (!classi.contains(classe)) {
+            classi.add(classe);
+            // Aggiungi il professore alla classe
+            classe.addProfessori(this);
+        }
+    }
+
+	    public void removeClassi(Classe classe) {
+	        this.classi.remove(classe);
+	        classe.getProfessori().remove(this);
+	    }
+	    
+	    public String getImmagine() {
+	        return immagine;
+	    }
+
+	    public void setImmagine(String immagine) {
+	        this.immagine = immagine;
+	    }
 
 	/*public Boolean getIsCoordinatore() {
 		return isCoordinatore;

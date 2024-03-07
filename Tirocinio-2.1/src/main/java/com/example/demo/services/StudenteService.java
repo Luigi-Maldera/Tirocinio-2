@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class StudenteService {
@@ -17,6 +18,7 @@ public class StudenteService {
     public List<Studente> getAllStudenti() {
         return studenteRepository.findAll();
     }
+
 
     public Optional<Studente> getStudenteById(Long id) {
         return studenteRepository.findById(id);
@@ -46,9 +48,9 @@ public class StudenteService {
             if (updatedStudente.getIndirizzo() != null) {
                 currentStudente.setIndirizzo(updatedStudente.getIndirizzo());
             }
-            // Aggiungi altri campi che desideri aggiornare
-
-            // Salva lo studente esistente con i nuovi dati
+            if (updatedStudente.getImmagine() != null) {
+            	currentStudente.setImmagine(updatedStudente.getImmagine());
+            }// Salva lo studente esistente con i nuovi dati
             return studenteRepository.save(currentStudente);
         } else {
             // Lo studente con l'ID specificato non è stato trovato
