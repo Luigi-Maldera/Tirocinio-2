@@ -27,12 +27,6 @@ public class Classe {
     private String nome;
     private String anno;
     
-    /*@OneToMany(mappedBy = "classe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)    
-    @JsonIgnoreProperties("classe")
-    private List<ProfessoreScuola> professori;*/
-    
-    /*@ManyToMany(mappedBy = "classi")
-    @JsonIgnoreProperties("classi")*/
     @ManyToMany
     @JoinTable(
         name = "professore_classe",
@@ -77,15 +71,6 @@ public class Classe {
 	    }
 	    this.studenti = studenti;
 	}
-
-
-	/*public List<ProfessoreScuola> getProfessori() {
-		return professori;
-	}
-
-	public void setProfessori(List<ProfessoreScuola> professori) {
-		this.professori = professori;
-	}*/
 	
 	public Set<ProfessoreScuola> getProfessori() {
         return professori;

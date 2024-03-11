@@ -239,130 +239,6 @@ function getStudentsList(callback) {
         }
     });
 }
-// Funzione per assegnare un professore a una classe
-function assignProfessorToClass() {
-    var classeId = prompt('Enter the ID of the class to assign:'); 
-
-    getProfessorsList(function (professorsList) {
-        var orderedList = professorsList.map(professor => `• ${professor.id}: ${professor.nome} ${professor.cognome}`);
-
-        alert('Select Professor ID to assign:\n' + orderedList.join('\n'));
-
-        var professorIndex = prompt('Enter the ID of the professor to assign:');
-
-        var selectedProfessor = professorsList.find(professor => professor.id === parseInt(professorIndex));
-
-        if (professorIndex && selectedProfessor) {
-            var payload = {
-                "professori": [
-                    {
-                        "id": selectedProfessor.id
-                    }
-                ],
-                "studenti": []
-            };
-
-            updateClass(classeId, payload);
-        } else {
-            alert('Invalid selection. Please select a valid professor.');
-        }
-    });
-}
-
-// Funzione per disassegnare un professore da una classe
-function unassignProfessorFromClass() {
-    var classeId = prompt('Enter the ID of the class to unassign:');
-
-    getProfessorsList(function (professorsList) {
-        var orderedList = professorsList.map(professor => `• ${professor.id}: ${professor.nome} ${professor.cognome}`);
-
-        alert('Select Professor ID to unassign:\n' + orderedList.join('\n'));
-
-        var professorIndex = prompt('Enter the ID of the professor to unassign:');
-
-        var selectedProfessor = professorsList.find(professor => professor.id === parseInt(professorIndex));
-
-        if (professorIndex && selectedProfessor) {
-            var payload = {
-                "professori": [
-                    {
-                        "id": selectedProfessor.id,
-                        "action": "remove"
-                    }
-                ],
-                "studenti": []
-            };
-
-            updateClass(classeId, payload);
-        } else {
-            alert('Invalid selection. Please select a valid professor.');
-        }
-    });
-}
-
-// Funzione per assegnare uno studente a una classe
-function assignStudentToClass() {
-    var classeId = prompt('Enter the ID of the class to assign:'); 
-
-    getStudentsList(function (studentsList) {
-        var orderedList = studentsList.map(student => `• ${student.id}: ${student.nome} ${student.cognome}`);
-
-        alert('Select Student ID to assign:\n' + orderedList.join('\n'));
-
-        var studentIndex = prompt('Enter the ID of the student to assign:');
-
-        var selectedStudent = studentsList.find(student => student.id === parseInt(studentIndex));
-
-        if (studentIndex && selectedStudent) {
-            var payload = {
-                "professori": [],
-                "studenti": [
-                    {
-                        "id": selectedStudent.id
-                    }
-                ]
-            };
-
-            updateClass(classeId, payload);
-        } else {
-            alert('Invalid selection. Please select a valid student.');
-        }
-    });
-}
-
-// Funzione per disassegnare uno studente da una classe
-function unassignStudentFromClass() {
-    var classeId = prompt('Enter the ID of the class to unassign:');
-
-    getStudentsList(function (studentsList) {
-        
-        var orderedList = studentsList.map(student => `• ${student.id}: ${student.nome} ${student.cognome}`);
-
-        alert('Select Student ID to unassign:\n' + orderedList.join('\n'));
-
-        var studentIndex = prompt('Enter the ID of the student to unassign:');
-
-        var selectedStudent = studentsList.find(student => student.id === parseInt(studentIndex));
-
-        if (studentIndex && selectedStudent) {
-            var payload = {
-                "professori": [],
-                "studenti": [
-                    {
-                        "id": selectedStudent.id,
-                        "action": "remove"
-                    }
-                ]
-            };
-
-            updateClass(classeId, payload);
-        } else {
-            alert('Invalid selection. Please select a valid student.');
-        }
-    });
-}
-
-
 
 function getFormattedList(items) {
     return items.map(item => `${item.id}: ${item.nome} ${item.cognome}`).join(', ');
@@ -481,93 +357,119 @@ function showDetails(entityType, entityId) {
     });
 }
 
+function getClassDetails(classId, callback) {
+    const token = localStorage.getItem('token');
+
+    $.ajax({
+        url: '/api/classi/' + classId, 
+        type: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        },
+        success: function (data) {
+            callback(data); // Passa i dettagli della classe alla funzione di callback
+        },
+        error: function (error) {
+            handleCommonErrorCases(error);
+        }
+    });
+}
 
 
-function showAssignmentTables() {
+function showAssignmentTables(classId) {
 	$('#studentSelection').show();
     $('#professorSelection').show();
     $('#studentTable').show();
     $('#professorTable').show();
-    $('#studentSelectionUnassign').hide();
-    $('#professorSelectionUnassign').hide();
-    $('#studentTableUnassign').hide();
-    $('#professorTableUnassign').hide();
-    $('#assignButton').show();
-    $('#unassignButton').hide();
-    getStudentsList(function(studentsList) {
-        displayStudentsList(studentsList);
-        showStudentsWithoutClass();
-    });
-    getProfessorsList(displayProfessorsList);
-}
+    getClassDetails(classId, function(data) {
+        // Ottenere la lista dei professori e degli studenti
+        const assignedProfessors = data.professori.map(professor => professor.id.toString());
+        const assignedStudents = data.studenti.map(student => student.id.toString());
 
-function showDisassignmentTables(currentClassId) {
-	$('#studentSelection').hide();
-    $('#professorSelection').hide();
-    $('#studentTable').hide();
-    $('#professorTable').hide();
-    $('#studentSelectionUnassign').show();
-    $('#professorSelectionUnassign').show();
-    $('#studentTableUnassign').show();
-    $('#professorTableUnassign').show();
-    $('#assignButton').hide();
-    $('#unassignButton').show();
-    getStudentsList(function(studentsList) {
-        const filteredStudents = studentsList.filter(student => student.classe && student.classe.id === currentClassId);
-        displayStudentsList(filteredStudents);
-    });
-    getProfessorsList(function(professorsList) {
-        const filteredProfessors = professorsList.filter(professor => professor.classi && professor.classi.find(classe => classe.id === currentClassId));
-        displayProfessorsList(filteredProfessors);
+        // Chiamata AJAX per ottenere la lista completa dei professori e degli studenti
+        getProfessorsList(function(professorsList) {
+            // Costruire la tabella dei professori
+            buildProfessorTable(professorsList, assignedProfessors);
+        });
+
+        getStudentsList(function(studentsList) {
+            // Costruire la tabella degli studenti
+            buildStudentTable(studentsList, assignedStudents);
+        });
     });
 }
 
-// Funzione per assegnare un professore a una classe
-function assignClass(professorId, classId) {
+function assignOrUnassignClasses(entityId) {
     const token = localStorage.getItem('token');
+    const checkedClassIds = $('input[name=classi]:checked').map(function() {
+        return $(this).val();
+    }).get();
+
+    // Costruisci il payload per l'aggiornamento della classe
     const payload = {
-        "professori": [{ "id": professorId }],
+        "professori": [{ "id": entityId }],
         "studenti": []
     };
 
-    updateClass(classId, payload);
-    alert("Assegnazione completata con successo!");
-}
+    // Aggiungi solo le classi selezionate al payload
+    payload.professori[0].classi = checkedClassIds.map(classId => ({ "id": classId }));
 
-// Funzione per disassegnare un professore da una classe
-function removeAssignment(professorId, classId) {
-    const token = localStorage.getItem('token');
-    const payload = {
-        "professori": [{ "id": professorId, "action": "remove" }],
+    // Invia la richiesta di aggiornamento per ogni classe selezionata
+    checkedClassIds.forEach(classId => {
+        updateClass(classId, payload);
+    });
+
+    // Ottieni gli ID delle classi già assegnate al professore
+    const assignedClassIds = payload.professori[0].classi.map(classObj => classObj.id);
+
+    // Ottieni gli ID delle classi deselezionate
+    const unselectedClassIds = $('input[name=classi]').map(function() {
+        const classId = $(this).val();
+        return assignedClassIds.includes(classId) ? null : classId;
+    }).get().filter(id => id !== null);
+
+    // Costruisci il payload per disassegnare le classi deselezionate
+    const unassignPayload = {
+        "professori": [{ "id": entityId, "action": "remove" }],
         "studenti": []
     };
 
-    updateClass(classId, payload);
-    alert("Disassegnazione completata con successo!");
+    // Disassegna le classi deselezionate
+    unselectedClassIds.forEach(classId => {
+        updateClass(classId, unassignPayload);
+    });
+
+    // Mostra un messaggio di conferma
+    alert("Operazione completata con successo!");
 }
 
-// Funzione per assegnare uno studente a una classe
-function assignClass2(studentId, classId) {
+function assignOrUnassignClasses2(initialSelectedClass, entityId) {
     const token = localStorage.getItem('token');
+    const selectedClassId = $('input[name=classe]:checked').val();
+    // Costruisci il payload per l'aggiornamento della classe
     const payload = {
         "professori": [],
-        "studenti": [{ "id": studentId }]
+        "studenti": [{ "id": entityId }]
     };
 
-    updateClass(classId, payload);
-    alert("Assegnazione completata con successo!");
-}
+    if (selectedClassId === "none") {
+        // Disassegna la classe attualmente assegnata
+        const assignedClassId = initialSelectedClass ;
+        if (assignedClassId) {
+            const unassignPayload = {
+                "professori": [],
+                "studenti": [{ "id": entityId, "action": "remove" }]
+            };
+            updateClass(assignedClassId, unassignPayload);
+        }
+    } else {
+        // Assegna la classe selezionata
+        payload.studenti[0].classi = [{ "id": selectedClassId }];
+        updateClass(selectedClassId, payload);
+    }
 
-// Funzione per disassegnare uno studente da una classe
-function removeAssignment2(studentId, classId) {
-    const token = localStorage.getItem('token');
-    const payload = {
-        "professori": [],
-        "studenti": [{ "id": studentId, "action": "remove" }]
-    };
-
-    updateClass(classId, payload);
-    alert("Disassegnazione completata con successo!");
+    // Mostra un messaggio di conferma
+    alert("Operazione completata con successo!");
 }
 
 
@@ -613,25 +515,13 @@ function showEditForm(entityType, entityId) {
                             editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
                             editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
                             editFormContainer.append(`<label for="materia">Materia:</label> <input type="text" name="materia" value="${data.materia}"><br>`);
-                            editFormContainer.append(`<label for="classe">Seleziona una classe:</label>`);
-                            const classeSelect = $(`<select name="classe"></select>`);
+                            editFormContainer.append(`Assegna o Disassegna le classi:<br>`);
+                            // Aggiungi una checkbox per ogni classe
                             allClasses.forEach(classe => {
-                                classeSelect.append(`<option value="${classe.id}">${classe.nome} - Anno: ${classe.anno}</option>`);
+                                const isChecked = data.classi && data.classi.find(c => c.id === classe.id);
+                                editFormContainer.append(`<input type="checkbox" name="classi" value="${classe.id}" ${isChecked ? 'checked' : ''}>${classe.nome} - Anno: ${classe.anno}<br>`);
                             });
-                            editFormContainer.append(classeSelect);
-                            editFormContainer.append(`<button onclick="assignClass(${currentProfessorId}, $('select[name=classe]').val())">Assegna Classe</button><br>`);
-                            
-                            // Visualizza le classi già assegnate con il pulsante per disassegnarle
-						    if (data.classi && data.classi.length > 0) {
-						        editFormContainer.append(`<p>Classi Assegnate:</p>`);
-						        const classiList = $('<ul></ul>');
-						        data.classi.forEach(classe => {
-						            classiList.append(`<li>${classe.nome} - Anno: ${classe.anno} <button onclick="removeAssignment(${currentProfessorId}, ${classe.id})">X</button></li>`);
-						        });
-						        editFormContainer.append(classiList);
-						    } else {
-						        editFormContainer.append(`<p>Classi Assegnate: N/D</p>`);
-						    }
+                            editFormContainer.append(`<button onclick="submitEditForm('${entityType}');assignOrUnassignClasses(${currentProfessorId})">Salva le Modifiche</button><br>`);
 
                             break;
 
@@ -641,69 +531,47 @@ function showEditForm(entityType, entityId) {
                             editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
                             editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
                             editFormContainer.append(`<label for="anno">Anno:</label> <input type="text" name="anno" value="${data.anno}"><br>`);
-                            editFormContainer.append(`<button onclick="showAssignmentTables()">Assegna Studenti e Professori</button>`);
-                            editFormContainer.append(`<button onclick="showDisassignmentTables(${currentClassId})">Disassegna Studenti e Professori</button>`);
-                            
-    						editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente da Assegnare</h3>`);
+                            editFormContainer.append(`<button onclick="showAssignmentTables(${currentClassId})">Assegna o Disasegna Studenti e Professori</button>`);
+    						editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente</h3>`);
 						    const studentTable = $('<table id="studentTable" style="display: none;"></table>');
 						    editFormContainer.append(studentTable);
-						    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore da Assegnare</h3>`);
+						    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore</h3>`);
 						    const professorTable = $('<table id="professorTable" style="display: none;"></table>');
 						    editFormContainer.append(professorTable);
-						    editFormContainer.append(`<button id="assignButton" style="display:none;" onclick="assignStudentsAndProfessors('both', ${currentClassId})">Assegna</button>`);
-						    editFormContainer.append(`<h3 id="studentSelectionUnassign" style="display: none;">Seleziona lo Studente da Disassegnare</h3>`);
-						    const studentTableUnassign = $('<table id="studentTableUnassign" style="display: none;"></table>');
-						    editFormContainer.append(studentTableUnassign);
-						    editFormContainer.append(`<h3 id="professorSelectionUnassign" style="display: none;">Seleziona il Professore da Disassegnare</h3>`);
-						    const professorTableUnassign = $('<table id="professorTableUnassign" style="display: none;"></table>');
-						    editFormContainer.append(professorTableUnassign);
-						    editFormContainer.append(`<button id="unassignButton" style="display:none;" onclick="unassignStudentsAndProfessors('both', ${currentClassId})">Disassegna</button>`);
+						    editFormContainer.append(`<button onclick="submitEditForm('${entityType}');saveClassChanges(${currentClassId})">Salva le Modifiche</button>`);
+
                             break;
 
                         case 'student':
-							const currentStudentId = data.id;
-                            editFormContainer.append(`<h2>Modifica Studente</h2>`);
-                            editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
-                            // Aggiungi campo di input per caricare una nuova immagine
-					        editFormContainer.append(`<label for="immagine">Nuova Immagine:</label> <input type="hidden" name="immagine"> <input type="file" name="nuova-immagine" accept="image/*"><br>`);
-					        // Mostra l'immagine attuale del professore
-					        if(data.immagine){
-					        	editFormContainer.append(`<img alt="Immagine dello Studente" src="${data.immagine}" class="preview-image" name="immagine"><br>`);
-					        } else {
+						    const currentStudentId = data.id;
+						    editFormContainer.append(`<h2>Modifica Studente</h2>`);
+						    editFormContainer.append(`<input type="hidden" name="id" value="${data.id}">`);
+						    // Aggiungi campo di input per caricare una nuova immagine
+						    editFormContainer.append(`<label for="immagine">Nuova Immagine:</label> <input type="hidden" name="immagine"> <input type="file" name="nuova-immagine" accept="image/*"><br>`);
+						    // Mostra l'immagine attuale dello studente
+						    if(data.immagine){
+						        editFormContainer.append(`<img alt="Immagine dello Studente" src="${data.immagine}" class="preview-image" name="immagine"><br>`);
+						    } else {
 						        editFormContainer.append(`<img alt="" src="" class="preview-image" name="immagine"><br>`);
 						    }
-                            editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
-                            editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
-                            editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
-                            editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
-                            // Aggiungi selezione della classe
-                             editFormContainer.append(`<label for="classe">Seleziona una classe:</label>`);
-                            const classeSelect2 = $(`<select name="classe"></select>`);
-                            allClasses.forEach(classe => {
-                                // Verifica se lo studente è già assegnato a questa classe
-                                const isAssigned = data.classe && data.classe.id === classe.id;
-                                classeSelect2.append(`<option value="${classe.id}" ${isAssigned ? 'disabled' : ''}>${classe.nome} - Anno: ${classe.anno}</option>`);
-                            });
-                            editFormContainer.append(classeSelect2);
-                            
-                            // Bottone per assegnare la classe (abilitato solo se non è già assegnato)
-                            editFormContainer.append(`<button onclick="assignClass2(${currentStudentId}, $('select[name=classe]').val())" ${data.classe ? 'disabled' : ''}>Assegna Classe</button><br>`);
-                            
-                            // Visualizza la classe già assegnata se presente
-                            if (data.classe) {
-                                editFormContainer.append(`<p>Classe Assegnata: ${data.classe.nome} - Anno: ${data.classe.anno}</p>`);
-                                
-                                // Aggiungi pulsante per disassegnare la classe
-                                editFormContainer.append(`<button onclick="removeAssignment2(${currentStudentId}, ${data.classe.id})">Disassegna Classe</button>`);
-                            } else {
-                                editFormContainer.append(`<p>Classe Assegnata: N/D</p>`);
-                            }
-                            break;
+						    editFormContainer.append(`<label for="nome">Nome:</label> <input type="text" name="nome" value="${data.nome}"><br>`);
+						    editFormContainer.append(`<label for="cognome">Cognome:</label> <input type="text" name="cognome" value="${data.cognome}"><br>`);
+						    editFormContainer.append(`<label for="eta">Età:</label> <input type="text" name="eta" value="${data.eta}"><br>`);
+						    editFormContainer.append(`<label for="indirizzo">Indirizzo:</label> <input type="text" name="indirizzo" value="${data.indirizzo}"><br>`);
+						    editFormContainer.append(`<label>Seleziona una classe:</label><br>`);
+						    const initialSelectedClass = data.classe && data.classe.id;
+						    allClasses.forEach(classe => {
+						        // Verifica se lo studente è già assegnato a questa classe
+						        const isAssigned = data.classe && data.classe.id === classe.id;
+						        editFormContainer.append(`<input type="radio" name="classe" value="${classe.id}" ${isAssigned ? 'checked' : ''}> ${classe.nome} - Anno: ${classe.anno}<br>`);
+						    });
+						    editFormContainer.append(`<input type="radio" name="classe" value="none" ${!data.classe ? 'checked' : ''}> Nessuna Classe<br>`);
+						    editFormContainer.append(`<button onclick="submitEditForm('${entityType}');assignOrUnassignClasses2(${initialSelectedClass}, ${currentStudentId})">Salva le Modifiche</button><br>`);
+						    break;
 
                     }
+					editFormContainer.append(`<button onclick="cancelEdit('${entityType}')">Annulla</button>`);
 
-                    editFormContainer.append(`<button onclick="submitEditForm('${entityType}')">Salva Modifiche</button>`);
-                    editFormContainer.append(`<button onclick="cancelEdit('${entityType}')">Annulla</button>`);
                     
                     
                     // Aggiungi un evento change all'input file nel form di creazione
@@ -729,8 +597,7 @@ function showEditForm(entityType, entityId) {
     });
 }
 
-function assignStudentsAndProfessors(classType, classId) {
-    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
+function saveClassChanges(classId) {
     var selectedProfessors = $("#professorTable input[type='checkbox']:checked").map(function() {
         return this.value;
     }).get();
@@ -739,75 +606,71 @@ function assignStudentsAndProfessors(classType, classId) {
         return this.value;
     }).get();
 
-    // Verifica se almeno un professore o studente è stato selezionato
-    if (selectedProfessors.length > 0 || selectedStudents.length > 0) {
+    var unselectedProfessors = $("#professorTable input[type='checkbox']:not(:checked)").map(function() {
+        return this.value;
+    }).get();
+
+    var unselectedStudents = $("#studentTable input[type='checkbox']:not(:checked)").map(function() {
+        return this.value;
+    }).get();
+
+    // Ottenere la lista degli studenti assegnati utilizzando la chiamata AJAX
+    getClassDetails(classId, function(data) {
+        const assignedStudents = data.studenti.map(student => student.id.toString());
+
         var payload = {
             "professori": [],
-            "studenti": []
+            "studenti": assignedStudents.map(id => ({ "id": parseInt(id) })) // Aggiungi tutti gli studenti già assegnati alla classe
         };
 
-        // Aggiungi professori al payload se la classe è di tipo professore
-        if (classType === "professor" || classType === "both") {
-            selectedProfessors.forEach(function (id) {
-                payload.professori.push({ "id": parseInt(id) });
-            });
-        }
+        selectedProfessors.forEach(function (id) {
+            payload.professori.push({ "id": parseInt(id) });
+        });
 
-        // Aggiungi studenti al payload se la classe è di tipo studente
-        if (classType === "student" || classType === "both") {
-            selectedStudents.forEach(function (id) {
+        selectedStudents.forEach(function (id) {
+            if (!assignedStudents.includes(id)) {
                 payload.studenti.push({ "id": parseInt(id) });
-            });
-        }
+            }
+        });
 
-        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
-        updateClass(classId, payload);
-        alert("Assegnazione completata con successo!");
-    } else {
-        alert('Seleziona almeno un professore o studente per l\'assegnazione.');
-    }
-}
+        unselectedProfessors.forEach(function (id) {
+            payload.professori.push({ "id": parseInt(id), "action": "remove" });
+        });
 
-function unassignStudentsAndProfessors(classType, classId) {
-    // Ottenere i valori selezionati dalla tabella dei professori e/o studenti
-    var selectedProfessors = $("#professorTableUnassign input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    var selectedStudents = $("#studentTableUnassign input[type='checkbox']:checked").map(function() {
-        return this.value;
-    }).get();
-
-    // Verifica se almeno un professore o studente è stato selezionato
-    if (selectedProfessors.length > 0 || selectedStudents.length > 0) {
-        var payload = {
-            "professori": [],
-            "studenti": []
-        };
-
-        // Aggiungi professori al payload se la classe è di tipo professore
-        if (classType === "professor" || classType === "both") {
-            selectedProfessors.forEach(function (id) {
-                payload.professori.push({ "id": parseInt(id), "action": "remove" });
-            });
-        }
-
-        // Aggiungi studenti al payload se la classe è di tipo studente
-        if (classType === "student" || classType === "both") {
-            selectedStudents.forEach(function (id) {
+        // Aggiungi solo gli studenti deselezionati per la disassegnazione
+        unselectedStudents.forEach(function (id) {
+            if (assignedStudents.includes(id)) {
                 payload.studenti.push({ "id": parseInt(id), "action": "remove" });
-            });
-        }
+            }
+        });
 
-        // Chiamare la tua funzione di aggiornamento della classe con l'ID della classe e il payload
         updateClass(classId, payload);
-        alert("Disassegnazione completata con successo!");
-    } else {
-        alert('Seleziona almeno un professore o studente per la disassegnazione.');
-    }
+        alert("Modifiche salvate con successo!");
+    });
 }
 
 
+function buildProfessorTable(professors, assignedProfessors) {
+    var professorTable = $("#professorTable");
+    professorTable.empty(); // Svuota la tabella prima di ricostruirla
+
+    professors.forEach(function(professor) {
+        var isChecked = assignedProfessors.includes(professor.id.toString());
+        var checkbox = $('<input type="checkbox" name="professorRadio" value="' + professor.id + '" ' + (isChecked ? 'checked' : '') + '>').appendTo('<td>');
+        $('<tr>').append($('<td>').text(professor.id)).append($('<td>').text(professor.nome)).append($('<td>').text(professor.cognome)).append($('<td>').text(professor.materia)).append(checkbox).appendTo(professorTable);
+    });
+}
+
+function buildStudentTable(students, assignedStudents) {
+    var studentTable = $("#studentTable");
+    studentTable.empty(); // Svuota la tabella prima di ricostruirla
+
+    students.forEach(function(student) {
+        var isChecked = assignedStudents.includes(student.id.toString());
+        var checkbox = $('<input type="checkbox" name="studentRadio" value="' + student.id + '" ' + (isChecked ? 'checked' : '') + '>').appendTo('<td>');
+        $('<tr>').append($('<td>').text(student.id)).append($('<td>').text(student.nome)).append($('<td>').text(student.cognome)).append($('<td>').text((student.classe ? student.classe.nome : 'N/D'))).append(checkbox).appendTo(studentTable);
+    });
+}
 
 function cancelEdit(entityType) {
     const editFormContainer = $(`#${entityType}-edit-form-container`);
@@ -829,6 +692,16 @@ function submitEditForm(entityType) {
     editFormContainer.find('input').each(function () {
         formData[$(this).attr('name')] = $(this).val();
     });
+    
+    // Esclusione delle classi se l'entità è un professore
+    if (entityType === 'professor') {
+        // Rimuovi le classi dal formData
+        delete formData.classi;
+    }
+    
+    if (entityType ==='student') {
+		delete formData.classe;
+	}
 
     $.ajax({
         url: `/api/${entityType}i/${formData.id}`,
@@ -1021,27 +894,20 @@ function submitCreateForm(entityType) {
             editFormContainer.empty();
             // Se l'entityType è 'class', mostriamo i pulsanti di assegnazione e disassegnazione solo dopo aver creato la classe
             if (entityType === 'class') {
-                editFormContainer.append(`<button id="ass" style="display:none;" onclick="showAssignmentTables()">Assegna Studenti e Professori</button>`);
-                editFormContainer.append(`<button id="disass" style="display:none;" onclick="showDisassignmentTables(${data.id})">Disassegna Studenti e Professori</button>`);
+				const currentClassId = data.id;
+                editFormContainer.append(`<button id="ass" style="display:none;" onclick="showAssignmentTables(${currentClassId})">Assegna o Disassegna Studenti e Professori</button>`);
                 editFormContainer.append(`<button onclick="cancelCreate('${entityType}')">Indietro</button>`);
-                editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente da Assegnare</h3>`);
+                editFormContainer.append(`<h3 id="studentSelection" style="display: none;">Seleziona lo Studente</h3>`);
 			    const studentTable = $('<table id="studentTable" style="display: none;"></table>');
 			    editFormContainer.append(studentTable);
-			    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore da Assegnare</h3>`);
+			    editFormContainer.append(`<h3 id="professorSelection" style="display: none;">Seleziona il Professore</h3>`);
 			    const professorTable = $('<table id="professorTable" style="display: none;"></table>');
 			    editFormContainer.append(professorTable);
 			    editFormContainer.append(`<button id="assignButton" style="display:none;" onclick="assignStudentsAndProfessors('both', ${data.id})">Assegna</button>`);
-			    editFormContainer.append(`<h3 id="studentSelectionUnassign" style="display: none;">Seleziona lo Studente da Disassegnare</h3>`);
-			    const studentTableUnassign = $('<table id="studentTableUnassign" style="display: none;"></table>');
-			    editFormContainer.append(studentTableUnassign);
-			    editFormContainer.append(`<h3 id="professorSelectionUnassign" style="display: none;">Seleziona il Professore da Disassegnare</h3>`);
-			    const professorTableUnassign = $('<table id="professorTableUnassign" style="display: none;"></table>');
-			    editFormContainer.append(professorTableUnassign);
-			    editFormContainer.append(`<button id="unassignButton" style="display:none;" onclick="unassignStudentsAndProfessors('both', ${data.id})">Disassegna</button>`);
+			    editFormContainer.append(`<button onclick="saveClassChanges(${currentClassId})">Salva le Modifiche</button>`);
                 // Se l'ID della classe è definito, mostriamo i pulsanti di assegnazione e disassegnazione
                 if (data.id) {
                     editFormContainer.find('#ass').show();
-                    editFormContainer.find('#disass').show();
                 }
             } else {
                 $('#professor-table').show();
@@ -1174,9 +1040,6 @@ function filterTablesByClass(className) {
 }
 
 
-
-
-
 // Funzione per popolare dinamicamente la tabella dei professori
 function displayProfessorsList(professorsList) {
     var professorTable = $('#professorTable');
@@ -1196,37 +1059,6 @@ function displayProfessorsList(professorsList) {
         professorTable.append(row);
         professorTable2.append(row);
     });
-}
-
-// Funzione per visualizzare i professori senza classe assegnata
-function showProfessorsWithoutClass() {
-    $('#professorTable tr').each(function() {
-        if ($(this).find('td:eq(5)').text() === 'N/D') {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
-    });
-}
-
-// Funzione per visualizzare i professori senza classe assegnata
-function showStudentsWithoutClass() {
-    $('#studentTable tr').each(function() {
-        if ($(this).find('td:eq(4)').text() === 'N/D') {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
-    });
-}
-
-// Funzione per ripristinare la visualizzazione di tutti i professori
-function resetProfessorFilter() {
-    $('#professorTable tr').show();
-}
-
-function resetStudentFilter() {
-    $('#studentTable tr').show();
 }
 
 // Funzione per popolare dinamicamente la tabella degli studenti

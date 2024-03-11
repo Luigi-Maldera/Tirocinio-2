@@ -28,8 +28,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Professore_Scuola")
-//@Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class ProfessoreScuola {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,12 +41,6 @@ public class ProfessoreScuola {
     private String immagine;
     // Altre proprietà e relazioni
     
-    /*@ManyToMany
-    @JoinTable(
-        name = "professore_classe", // Nome della tabella di join
-        joinColumns = @JoinColumn(name = "professore_id"), // Colonna che fa riferimento ai professori
-        inverseJoinColumns = @JoinColumn(name = "classe_id") // Colonna che fa riferimento alle classi
-    )*/
     @ManyToMany(mappedBy = "professori")
     private Set<Classe> classi = new HashSet<>();
 
@@ -63,17 +55,6 @@ public class ProfessoreScuola {
 	public void setEta(Integer eta) {
 		this.eta = eta;
 	}
-
-	/*public Classe getClasse() {
-		return classe;
-	}
-
-	public void setClasse(Classe classe) {
-        // Aggiungi la logica per gestire solo gli attributi specifici che dovrebbero essere modificati
-        if (classe != null) {
-            this.classe = classe;
-        }
-    }*/
 	
 	 // Getter e setter per la relazione many-to-many con le classi
     public Set<Classe> getClassi() {
